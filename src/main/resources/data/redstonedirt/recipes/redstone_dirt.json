@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:dirt"
+    }
+  ],
+  "result":
+  {
+    "item": "redstonedirt:redstone_dirt",
+    "count": 1
+  }
+}
