@@ -6,20 +6,20 @@ Build: 1.16.5-0.0.0-beta - Mon JUL 6 0:11:58 PST 2021
 
 =========
 
-Build: 1.16.5-0.1.0-alpha - Mon JUL 6 0:11:58 PST 2021
+Build: 1.16.5-0.1.0-alpha - Mon JUL 6 5:11:58 PST 2021
 	arketec:
 		Added redstone dirt detector
 
 =========
 
-Build: 1.16.5-0.1.1-alpha - Mon JUL 6 0:11:58 PST 2021
+Build: 1.16.5-0.1.1-alpha - Mon JUL 6 6:11:58 PST 2021
 	arketec:
 		Added redstone dirt detector tile entity
         Will output redstone signal of the stage + 1 of sapling placed on it, and full power when it grows
 
 =========
 
-Build: 1.16.5-0.2.0-alpha - Mon JUL 6 0:11:58 PST 2021
+Build: 1.16.5-0.2.0-alpha - Mon JUL 7 11:58:58 PST 2021
 	arketec:
 		Added redstone dirt detector farmland and tile entity
 		Updated textures and models
