@@ -2,6 +2,6 @@
 
 A simple mod that adds a powered block of dirt by combining a dirt and redstone dust in a crafting grid
 
-This block will strongly power blocks adjacent to it (indicated by redstone particles)
+There is also a detector that will output a signal based on growth of the plant above
 
-Power can be disabled by right-clicking the block with a hoe (indicated by particles stopping)
+wiki coming soon
