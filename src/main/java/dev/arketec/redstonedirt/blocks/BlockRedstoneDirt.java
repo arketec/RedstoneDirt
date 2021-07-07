@@ -38,7 +38,7 @@ public class BlockRedstoneDirt extends Block {
                 .harvestLevel(0)
                 .harvestTool(ToolType.SHOVEL)
                 .sound(SoundType.GRAVEL)
-                .lightLevel((BlockState state) -> 2)
+                .lightLevel((BlockState state) -> state.getValue(POWERED) ? 2: 0)
 
         );
         this.registerDefaultState(
@@ -53,7 +53,7 @@ public class BlockRedstoneDirt extends Block {
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
         if (hand.name() == Hand.MAIN_HAND.name()) {
             ItemStack held = playerEntity.getItemInHand(hand);
-            if (held.getItem() instanceof HoeItem) {
+            if (held.getItem() instanceof AxeItem) {
                 if (state.getValue(POWERED)) {
                     this.setBlockState(world, pos, this.defaultBlockState());
                 } else {

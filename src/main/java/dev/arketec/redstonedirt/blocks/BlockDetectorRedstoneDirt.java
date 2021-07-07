@@ -2,11 +2,14 @@ package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.blocks.BlockRedstoneDirt;
 import dev.arketec.redstonedirt.blocks.tile.TileDetectorRedstoneDirt;
+import dev.arketec.redstonedirt.registration.ModBlocks;
+import dev.arketec.redstonedirt.registration.ModTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MinecartItem;
@@ -24,18 +27,13 @@ import net.minecraft.world.World;
 
 public class BlockDetectorRedstoneDirt extends BlockRedstoneDirt {
 
-    public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
-
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
-        if (hand.name() == Hand.MAIN_HAND.name()) {
+        if (hand.name().equals(Hand.MAIN_HAND.name())) {
             ItemStack held = playerEntity.getItemInHand(hand);
-            if (held.getItem() instanceof HoeItem) {
-                if (state.getValue(INVERTED)) {
-                    this.setBlockState(world, pos, this.defaultBlockState().setValue(INVERTED, Boolean.valueOf(false)));
-                } else {
-                    this.setBlockState(world, pos, this.defaultBlockState().setValue(INVERTED, Boolean.valueOf(true)));
-                }
+            if (held.getItem() instanceof HoeItem && world.isEmptyBlock(pos.above())) {
+                held.hurtAndBreak(1, playerEntity, e -> e.broadcastBreakEvent(hand));
+                world.setBlockAndUpdate(pos, ModBlocks.REDSTONE_FARMLAND_DETECTOR.get().defaultBlockState());
                 return ActionResultType.SUCCESS;
             }
         }
@@ -54,6 +52,6 @@ public class BlockDetectorRedstoneDirt extends BlockRedstoneDirt {
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(POWER, POWERED, INVERTED);
+        builder.add(POWER, POWERED);
     }
 }

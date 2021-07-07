@@ -1,13 +1,30 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "dgd",
+    "dod",
+    "drd"
+  ],
+  "key":
+  {
+    "d":
     {
       "item": "redstonedirt:redstone_dirt"
     },
+    "g":
     {
-      "item": "minecraft:comparator"
+      "item": "minecraft:glass"
+    },
+    "o":
+    {
+      "item": "minecraft:observer"
+    },
+    "r":
+    {
+      "item": "minecraft:redstone"
     }
-  ],
+  },
   "result":
   {
     "item": "redstonedirt:redstone_dirt_detector",
