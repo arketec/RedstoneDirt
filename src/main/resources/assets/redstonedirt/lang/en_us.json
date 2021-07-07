@@ -1,4 +1,6 @@
 {
   "block.redstonedirt.redstone_dirt": "Redstone Dirt",
-  "item.redstonedirt.redstone_dirt": "Redstone Dirt"
+  "item.redstonedirt.redstone_dirt": "Redstone Dirt",
+  "block.redstonedirt.redstone_dirt_detector": "Redstone Dirt Detector",
+  "item.redstonedirt.redstone_dirt_detector": "Redstone Dirt Detector"
 }

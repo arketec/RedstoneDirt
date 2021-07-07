@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "redstonedirt:redstone_dirt"
+    },
+    {
+      "item": "minecraft:comparator"
+    }
+  ],
+  "result":
+  {
+    "item": "redstonedirt:redstone_dirt_detector",
+    "count": 1
+  }
+}

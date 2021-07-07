@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "redstonedirt:redstone_dirt"
+    "redstonedirt:redstone_dirt",
+    "redstonedirt:redstone_dirt_detector"
   ]
 }

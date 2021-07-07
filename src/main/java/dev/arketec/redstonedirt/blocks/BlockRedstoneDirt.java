@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResultType;
@@ -20,7 +19,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
@@ -37,18 +35,18 @@ public class BlockRedstoneDirt extends Block {
     public BlockRedstoneDirt() {
         super(AbstractBlock.Properties.of(Material.DIRT)
                 .strength(0.5f)
-                .randomTicks()
                 .harvestLevel(0)
                 .harvestTool(ToolType.SHOVEL)
                 .sound(SoundType.GRAVEL)
                 .lightLevel((BlockState state) -> 2)
 
         );
-        this.registerDefaultState(this.stateDefinition
-                .any()
-                .setValue(POWER, Integer.valueOf(15))
-                .setValue(POWERED, Boolean.valueOf(true))
-        );
+        this.registerDefaultState(
+                this.getStateDefinition()
+                    .any()
+                    .setValue(POWER, Integer.valueOf(0))
+                    .setValue(POWERED, Boolean.valueOf(false))
+                );
     }
 
     @Override
@@ -56,10 +54,10 @@ public class BlockRedstoneDirt extends Block {
         if (hand.name() == Hand.MAIN_HAND.name()) {
             ItemStack held = playerEntity.getItemInHand(hand);
             if (held.getItem() instanceof HoeItem) {
-                if (!state.getValue(POWERED)) {
-                    world.setBlockAndUpdate(pos, this.defaultBlockState());
+                if (state.getValue(POWERED)) {
+                    this.setBlockState(world, pos, this.defaultBlockState());
                 } else {
-                    world.setBlockAndUpdate(pos, state.setValue(POWERED, Boolean.valueOf(false)).setValue(POWER, Integer.valueOf(0)));
+                    this.setBlockState(world, pos, this.getFullPoweredState(state));
                 }
                 return ActionResultType.SUCCESS;
             }
@@ -96,6 +94,14 @@ public class BlockRedstoneDirt extends Block {
     public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable) {
         PlantType type = plantable.getPlantType(world, pos.offset(facing.getNormal()));
         return type == PlantType.PLAINS || type == PlantType.BEACH || plantable instanceof StemBlock;
+    }
+
+    public  BlockState getFullPoweredState(BlockState state) {
+        return state.setValue(POWERED, Boolean.valueOf(true)).setValue(POWER, Integer.valueOf(15));
+    }
+
+    public void setBlockState(World world, BlockPos pos, BlockState newState) {
+        world.setBlockAndUpdate(pos, newState);
     }
 
     @OnlyIn(Dist.CLIENT)

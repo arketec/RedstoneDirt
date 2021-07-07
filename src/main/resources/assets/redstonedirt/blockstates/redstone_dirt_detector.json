@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "redstonedirt:block/redstone_dirt_detector"
+    }
+  }
+}
