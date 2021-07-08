@@ -28,3 +28,11 @@ Build: 1.16.5-0.2.0-alpha - Mon JUL 7 11:58:58 PST 2021
 		Farmland will output redstone signal of the age  + 1 of crop that is growing, and full power when at max growth
 
 =========
+
+Build: 1.16.5-0.3.0-alpha - Mon JUL 8 01:58:58 PST 2021
+	arketec:
+        refactored common base classes
+        changed default behavior or redstone dirt and farmland
+        they now act like redstone wires
+
+=========
