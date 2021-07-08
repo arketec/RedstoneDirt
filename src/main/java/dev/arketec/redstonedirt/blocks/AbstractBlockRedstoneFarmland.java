@@ -34,7 +34,7 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
-    public AbstractBlockRedstoneFarmland(boolean enabled) {
+    public AbstractBlockRedstoneFarmland(int defaultPower, boolean defaultPowered, boolean strongPowered) {
         super(Properties
                 .of(Material.DIRT)
                 .randomTicks()
@@ -47,10 +47,10 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock {
         this.registerDefaultState(
                 this.getStateDefinition()
                         .any()
-                        .setValue(POWER, Integer.valueOf(0))
-                        .setValue(POWERED, Boolean.valueOf(false))
+                        .setValue(POWER, Integer.valueOf(defaultPower))
+                        .setValue(POWERED, Boolean.valueOf(defaultPowered))
                         .setValue(MOISTURE, Integer.valueOf(0))
-                        .setValue(ENABLED, enabled)
+                        .setValue(ENABLED, strongPowered)
         );
     }
 
@@ -59,6 +59,11 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock {
 
     @Override
     public abstract void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random);
+
+    @Override
+    public void fallOn(World world, BlockPos pos, Entity entity, float v) {
+        entity.causeFallDamage(v, 1.0F);
+    }
 
     @Override
     public boolean isSignalSource(BlockState p_149744_1_) {

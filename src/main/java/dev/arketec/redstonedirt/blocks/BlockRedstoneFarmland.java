@@ -15,7 +15,7 @@ import java.util.Random;
 public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
 
     public BlockRedstoneFarmland() {
-        super(false);
+        super(0, false,false);
     }
 
     @Override
@@ -75,6 +75,7 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
         int neighborPower = world.getBestNeighborSignal(pos);
         int j = 0;
         if (neighborPower < 15) {
+            // check strong powered neighbors of neighbors
             for(Direction direction : Direction.Plane.HORIZONTAL) {
                 BlockPos blockpos = pos.relative(direction);
                 BlockState blockstate = world.getBlockState(blockpos);
@@ -106,7 +107,7 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
 
         if (state.getValue(POWER) != strength && world.getBlockState(pos) == state) {
             setBlockState(world, pos,
-                    state.setValue(POWERED, neighborPower > 1 ? Boolean.valueOf(true): Boolean.valueOf(false))
+                    state.setValue(POWERED, strength > 0 ? Boolean.valueOf(true): Boolean.valueOf(false))
                             .setValue(POWER, Integer.valueOf(strength)));
         }
     }

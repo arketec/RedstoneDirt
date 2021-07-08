@@ -1,8 +1,14 @@
 {
   "block.redstonedirt.redstone_dirt": "Redstone Dirt",
   "item.redstonedirt.redstone_dirt": "Redstone Dirt",
+  "block.redstonedirt.redstone_farmland": "Redstone Farmland",
+  "item.redstonedirt.redstone_farmland": "Redstone Farmland",
   "block.redstonedirt.redstone_dirt_detector": "Redstone Dirt Detector",
   "item.redstonedirt.redstone_dirt_detector": "Redstone Dirt Detector",
   "block.redstonedirt.redstone_farmland_detector": "Redstone Farmland Detector",
-  "item.redstonedirt.redstone_farmland_detector": "Redstone Farmland Detector"
+  "item.redstonedirt.redstone_farmland_detector": "Redstone Farmland Detector",
+  "block.redstonedirt.redstone_powered_dirt": "Powered Redstone Dirt",
+  "item.redstonedirt.redstone_powered_dirt": "Powered Redstone Dirt",
+  "block.redstonedirt.redstone_powered_farmland": "Powered Redstone Farmland",
+  "item.redstonedirt.redstone_powered_farmland": "Powered Redstone Farmland"
 }

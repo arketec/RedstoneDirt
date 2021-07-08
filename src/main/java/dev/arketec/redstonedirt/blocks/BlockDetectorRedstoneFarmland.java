@@ -17,7 +17,7 @@ import java.util.Random;
 public class BlockDetectorRedstoneFarmland extends AbstractBlockRedstoneFarmland {
 
     public BlockDetectorRedstoneFarmland() {
-        super(true);
+        super(0, false,true);
     }
 
     @Override

@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 public class BlockDetectorRedstoneDirt extends AbstractBlockRedstoneDirt {
 
     public BlockDetectorRedstoneDirt() {
-        super(true);
+        super(0, false,true);
     }
 
     @Override

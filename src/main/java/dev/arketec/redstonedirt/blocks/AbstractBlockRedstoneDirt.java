@@ -30,7 +30,7 @@ public abstract class AbstractBlockRedstoneDirt extends Block {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
-    public AbstractBlockRedstoneDirt(boolean enabled) {
+    public AbstractBlockRedstoneDirt(int defaultPower, boolean defaultPowered, boolean strongPowered) {
         super(AbstractBlock.Properties.of(Material.DIRT)
                 .strength(0.5f)
                 .harvestLevel(0)
@@ -42,9 +42,9 @@ public abstract class AbstractBlockRedstoneDirt extends Block {
         this.registerDefaultState(
                 this.getStateDefinition()
                         .any()
-                        .setValue(POWER, Integer.valueOf(0))
-                        .setValue(POWERED, Boolean.valueOf(false))
-                        .setValue(ENABLED, Boolean.valueOf(enabled))
+                        .setValue(POWER, Integer.valueOf(defaultPower))
+                        .setValue(POWERED, Boolean.valueOf(defaultPowered))
+                        .setValue(ENABLED, Boolean.valueOf(strongPowered))
         );
     }
 

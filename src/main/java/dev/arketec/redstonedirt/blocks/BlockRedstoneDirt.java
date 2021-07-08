@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
 
     public BlockRedstoneDirt() {
-        super(false);
+        super(0, false,false);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
 
         if (state.getValue(POWER) != strength && world.getBlockState(pos) == state) {
             setBlockState(world, pos,
-                    state.setValue(POWERED, neighborPower > 1 ? Boolean.valueOf(true): Boolean.valueOf(false))
+                    state.setValue(POWERED, strength > 0 ? Boolean.valueOf(true): Boolean.valueOf(false))
                             .setValue(POWER, Integer.valueOf(strength)));
         }
     }

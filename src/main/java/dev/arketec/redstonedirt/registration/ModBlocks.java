@@ -1,9 +1,6 @@
 package dev.arketec.redstonedirt.registration;
 
-import dev.arketec.redstonedirt.blocks.BlockDetectorRedstoneDirt;
-import dev.arketec.redstonedirt.blocks.BlockDetectorRedstoneFarmland;
-import dev.arketec.redstonedirt.blocks.BlockRedstoneDirt;
-import dev.arketec.redstonedirt.blocks.BlockRedstoneFarmland;
+import dev.arketec.redstonedirt.blocks.*;
 import dev.arketec.redstonedirt.blocks.tile.TileDetectorRedstoneDirt;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -29,6 +26,14 @@ public class ModBlocks {
     public static final RegistryObject<Block> REDSTONE_FARMLAND = register(
             "redstone_farmland",
             BlockRedstoneFarmland::new
+    );
+
+    public static final RegistryObject<Block> REDSTONE_POWERED_DIRT = register("redstone_powered_dirt", () ->
+            new BlockPoweredRedstoneDirt()
+    );
+
+    public static final RegistryObject<Block> REDSTONE_POWERED_FARMLAND = register("redstone_powered_farmland", () ->
+            new BlockPoweredRedstoneFarmland()
     );
 
     public static final RegistryObject<Block> REDSTONE_DIRT_DETECTOR = register(
