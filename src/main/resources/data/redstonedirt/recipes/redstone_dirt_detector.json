@@ -3,14 +3,18 @@
   "pattern":
   [
     "dgd",
-    "dod",
-    "drd"
+    "pop",
+    "dpd"
   ],
   "key":
   {
     "d":
     {
       "item": "redstonedirt:redstone_dirt"
+    },
+    "p":
+    {
+      "item": "redstonedirt:redstone_powered_dirt"
     },
     "g":
     {
@@ -19,10 +23,6 @@
     "o":
     {
       "item": "minecraft:observer"
-    },
-    "r":
-    {
-      "item": "minecraft:redstone"
     }
   },
   "result":

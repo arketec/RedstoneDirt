@@ -25,7 +25,7 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.Random;
 
-public abstract class AbstractBlockRedstoneDirt extends Block {
+public abstract class AbstractBlockRedstoneDirt extends Block implements IRedstonePoweredPlantable {
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
@@ -52,7 +52,7 @@ public abstract class AbstractBlockRedstoneDirt extends Block {
     public abstract ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit);
 
     @Override
-    public boolean isSignalSource(BlockState p_149744_1_) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 

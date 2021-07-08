@@ -1,13 +1,26 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "minecraft:redstone_block"
-    },
-    {
-      "item": "minecraft:dirt"
-    }
+  "pattern":
+  [
+    "rrr",
+    "rdr",
+    "rtr"
   ],
+  "key":
+  {
+    "d":
+    {
+      "item": "redstonedirt:redstone_dirt"
+    },
+    "t":
+    {
+      "item": "minecraft:redstone_torch"
+    },
+    "r":
+    {
+      "item": "minecraft:redstone"
+    }
+  },
   "result":
   {
     "item": "redstonedirt:redstone_powered_dirt",

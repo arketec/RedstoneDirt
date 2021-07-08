@@ -29,7 +29,7 @@ import net.minecraftforge.common.PlantType;
 
 import java.util.Random;
 
-public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock {
+public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implements IRedstonePoweredPlantable {
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
@@ -66,7 +66,7 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock {
     }
 
     @Override
-    public boolean isSignalSource(BlockState p_149744_1_) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 
