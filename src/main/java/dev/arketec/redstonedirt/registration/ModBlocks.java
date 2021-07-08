@@ -46,17 +46,16 @@ public class ModBlocks {
             BlockDetectorRedstoneFarmland::new
     );
 
-//    public static final RegistryObject<Block> REDSTONE_DIRT_FLIP_FLOP = register(
-//            "redstone_dirt_flip_flop",
-//            BlockRedstoneDirtFlipFlop::new
+//    public static final RegistryObject<Block> REDSTONE_INVERTED_DIRT = register(
+//            "redstone_inverted_dirt",
+//            BlockNANDRedstoneDirt::new
+//    );
+//
+//    public static final RegistryObject<Block> REDSTONE_INVERTED_FARMLAND = register(
+//            "redstone_inverted_farmland",
+//            BlockNANDRedstoneFarmland::new
 //    );
 
-//    public static final RegistryObject<Block> REDSTONE_Farmland_FLIP_FLOP = register(
-//            "redstone_farmland_flip_flop",
-//            BlockRedstoneFarmlandFlipFlop::new
-//    );
-
-    // rest of basic logic gates
 
     // ender redstone dirt (entangled block states)
 
