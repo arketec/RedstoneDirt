@@ -1,37 +1,57 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
-import net.minecraft.block.*;
-import net.minecraft.item.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
+import java.util.Random;
 
-public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
+public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
 
-    public BlockRedstoneDirt() {
+    public BlockRedstoneFarmland() {
         super(false);
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
-        if (hand.name().equals(Hand.MAIN_HAND.name())) {
-            ItemStack held = playerEntity.getItemInHand(hand);
-            if (held.getItem() instanceof HoeItem && world.isEmptyBlock(pos.above())) {
-                held.hurtAndBreak(1, playerEntity, e -> e.broadcastBreakEvent(hand));
-                world.setBlockAndUpdate(pos, ModBlocks.REDSTONE_FARMLAND.get().defaultBlockState());
-                return ActionResultType.SUCCESS;
-            }
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (!state.canSurvive(world, pos)) {
+            turnToRedstoneDirt(state, world, pos);
         }
-        return ActionResultType.PASS;
     }
 
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        int i = state.getValue(MOISTURE);
+        if (!isNearWater(world, pos) && !world.isRainingAt(pos.above())) {
+            if (i > 0) {
+                world.setBlock(pos, state.setValue(MOISTURE, Integer.valueOf(i - 1)), 2);
+            } else if (!isUnderCrops(world, pos)) {
+                turnToRedstoneDirt(state, world, pos);
+            }
+        } else if (i < 7) {
+            world.setBlock(pos, state.setValue(MOISTURE, Integer.valueOf(7)), 2);
+        }
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext itemUseContext) {
+        return !this.defaultBlockState().canSurvive(itemUseContext.getLevel(), itemUseContext.getClickedPos()) ? ModBlocks.REDSTONE_DIRT.get().defaultBlockState() : super.getStateForPlacement(itemUseContext);
+    }
+
+    @Override
+    public void fallOn(World world, BlockPos pos, Entity entity, float v) {
+        if (!world.isClientSide && net.minecraftforge.common.ForgeHooks.onFarmlandTrample(world, pos, ModBlocks.REDSTONE_DIRT.get().defaultBlockState(), v, entity)) { // Forge: Move logic to Entity#canTrample
+            turnToRedstoneDirt(world.getBlockState(pos), world, pos);
+        }
+
+        super.fallOn(world, pos, entity, v);
+    }
     @Override
     public void neighborChanged(BlockState blockState, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         super.neighborChanged(blockState, world, pos, block, fromPos, isMoving);
@@ -94,4 +114,10 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
     private int getBlockSignal(BlockState state) {
         return state.is(this) ? state.getValue(POWER) : 0;
     }
+
+    public static void turnToRedstoneDirt(BlockState state, World world, BlockPos pos) {
+        world.setBlockAndUpdate(pos, pushEntitiesUp(state, ModBlocks.REDSTONE_DIRT.get().defaultBlockState(), world, pos));
+    }
+
+
 }

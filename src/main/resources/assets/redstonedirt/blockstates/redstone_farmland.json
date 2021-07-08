@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "moisture=0": {
+      "model": "redstonedirt:block/redstone_farmland"
+    },
+    "moisture=1": {
+      "model": "redstonedirt:block/redstone_farmland"
+    },
+    "moisture=2": {
+      "model": "redstonedirt:block/redstone_farmland"
+    },
+    "moisture=3": {
+      "model": "redstonedirt:block/redstone_farmland"
+    },
+    "moisture=4": {
+      "model": "redstonedirt:block/redstone_farmland"
+    },
+    "moisture=5": {
+      "model": "redstonedirt:block/redstone_farmland"
+    },
+    "moisture=6": {
+      "model": "redstonedirt:block/redstone_farmland"
+    },
+    "moisture=7": {
+      "model": "redstonedirt:block/redstone_farmland_moist"
+    }
+  }
+}

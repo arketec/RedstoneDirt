@@ -13,6 +13,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MinecartItem;
+import net.minecraft.network.DebugPacketSender;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
@@ -25,7 +26,11 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockDetectorRedstoneDirt extends BlockRedstoneDirt {
+public class BlockDetectorRedstoneDirt extends AbstractBlockRedstoneDirt {
+
+    public BlockDetectorRedstoneDirt() {
+        super(true);
+    }
 
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
@@ -50,8 +55,4 @@ public class BlockDetectorRedstoneDirt extends BlockRedstoneDirt {
         return new TileDetectorRedstoneDirt();
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(POWER, POWERED);
-    }
 }
