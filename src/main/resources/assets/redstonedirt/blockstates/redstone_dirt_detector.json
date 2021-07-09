@@ -2,6 +2,9 @@
   "variants": {
     "": {
       "model": "redstonedirt:block/redstone_dirt_detector"
+    },
+    "": {
+      "model": "redstonedirt:block/redstone_dirt_detector"
     }
   }
 }

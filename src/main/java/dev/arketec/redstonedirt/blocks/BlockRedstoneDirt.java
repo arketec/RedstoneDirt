@@ -12,6 +12,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
+
 
 public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
 
@@ -29,19 +31,15 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
                 return ActionResultType.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return super.use(state, world, pos, playerEntity, hand, hit);
     }
 
     @Override
     public void neighborChanged(BlockState blockState, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        super.neighborChanged(blockState, world, pos, block, fromPos, isMoving);
         if (!world.isClientSide()) {
-            if (world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.above())) {
-                this.updatePowerStrength(world, pos, blockState);
-            } else {
-                setBlockState(world, pos, defaultBlockState());
-            }
+            this.updatePowerStrength(world, pos, blockState);
         }
+        super.neighborChanged(blockState, world, pos, block, fromPos, isMoving);
     }
 
     @Override
@@ -52,37 +50,24 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
     }
 
     private void updatePowerStrength(World world, BlockPos pos, BlockState state) {
-        int neighborPower = world.getBestNeighborSignal(pos);
-        int j = 0;
+        //this.shouldSignal = false;
+        int neighborPower = getBestUncoveredSignal(world, pos, state);
+        this.shouldSignal = true;
+        int neighborsBestNeighbor = 0;
         if (neighborPower < 15) {
             for(Direction direction : Direction.Plane.HORIZONTAL) {
                 BlockPos blockpos = pos.relative(direction);
                 BlockState blockstate = world.getBlockState(blockpos);
-                j = Math.max(j, getBlockSignal(blockstate));
+                neighborsBestNeighbor = Math.max(neighborsBestNeighbor, getBlockSignal(blockstate));
                 BlockPos above = pos.above();
                 if (blockstate.isRedstoneConductor(world, blockpos) && !world.getBlockState(above).isRedstoneConductor(world, above)) {
-                    j = Math.max(j, getBlockSignal(world.getBlockState(above)));
+                    neighborsBestNeighbor = Math.max(neighborsBestNeighbor, getBlockSignal(world.getBlockState(above)));
                 } else if (!blockstate.isRedstoneConductor(world, blockpos)) {
-                    j = Math.max(j, getBlockSignal(world.getBlockState(blockpos.below())));
+                    neighborsBestNeighbor = Math.max(neighborsBestNeighbor, getBlockSignal(world.getBlockState(blockpos.below())));
                 }
             }
         }
-        int strength = Math.max(neighborPower, j - 1);
-        boolean isBestNeighborThis = false;
-        for(Direction direction : Direction.values()) {
-            if (world.getSignal(pos.relative(direction), direction) == neighborPower) {
-                BlockState blockState = world.getBlockState(pos.relative(direction));
-                if (blockState.is(this)) {
-                    isBestNeighborThis = true;
-                } else if (isBestNeighborThis) {
-                    isBestNeighborThis = false;
-                    break;
-                }
-            }
-        }
-        if (isBestNeighborThis && strength == neighborPower) {
-            strength = Math.max(0, strength -1);
-        }
+        int strength = Math.max(neighborPower, neighborsBestNeighbor - 1);
 
         if (state.getValue(POWER) != strength && world.getBlockState(pos) == state) {
             setBlockState(world, pos,
@@ -93,5 +78,25 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
 
     private int getBlockSignal(BlockState state) {
         return state.is(this) ? state.getValue(POWER) : 0;
+    }
+
+    private int getBestUncoveredSignal(World world, BlockPos pos, BlockState state) {
+        int i = 0;
+
+        for(Direction direction : Direction.values()) {
+            if (!isSideCovered(state, direction)) {
+                int j = world.getSignal(pos.relative(direction), direction);
+                if (j >= 15) {
+                    return 15;
+                }
+
+                if (j > i) {
+                    i = j;
+                }
+            }
+        }
+
+        return i;
+
     }
 }

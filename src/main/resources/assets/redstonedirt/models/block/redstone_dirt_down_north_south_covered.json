@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "down": "redstonedirt:block/insulated_cover_side",
+    "up": "redstonedirt:block/redstone_dirt",
+    "north": "redstonedirt:block/insulated_cover_side",
+    "east": "redstonedirt:block/redstone_dirt",
+    "south": "redstonedirt:block/insulated_cover_side",
+    "west": "redstonedirt:block/redstone_dirt"
+  }
+}

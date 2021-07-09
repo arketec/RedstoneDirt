@@ -1,6 +1,69 @@
 {
   "variants": {
-    "": {
+    "up=true,down=true,north=true,south=true,east=true,west=true": {
+      "model": "redstonedirt:block/redstone_dirt_all_covered"
+    },
+    "up=true,down=false,north=false,south=false,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_up_covered"
+    },
+    "up=true,down=true,north=false,south=false,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_up_down_covered"
+    },
+    "up=true,down=true,north=true,south=false,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_up_down_north_covered"
+    },
+    "up=true,down=true,north=true,south=true,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_up_down_north_south_covered"
+    },
+    "up=true,down=true,north=true,south=true,east=true,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_up_down_north_south_east_covered"
+    },
+    "up=false,down=true,north=false,south=false,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_down_covered"
+    },
+    "up=false,down=true,north=true,south=false,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_down_north_covered"
+    },
+    "up=false,down=true,north=true,south=true,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_down_north_south_covered"
+    },
+    "up=false,down=true,north=true,south=true,east=true,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_down_north_south_east_covered"
+    },
+    "up=false,down=true,north=true,south=true,east=true,west=true": {
+      "model": "redstonedirt:block/redstone_dirt_down_north_south_east_west_covered"
+    },
+    "up=false,down=false,north=true,south=false,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_north_covered"
+    },
+    "up=false,down=false,north=true,south=true,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_north_south_covered"
+    },
+    "up=false,down=false,north=true,south=true,east=true,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_north_south_east_covered"
+    },
+    "up=false,down=false,north=true,south=true,east=true,west=true": {
+      "model": "redstonedirt:block/redstone_dirt_north_south_east_west_covered"
+    },
+    "up=false,down=false,north=false,south=true,east=false,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_south_covered"
+    },
+    "up=false,down=false,north=false,south=true,east=true,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_south_east_covered"
+    },
+    "up=false,down=false,north=false,south=true,east=true,west=true": {
+      "model": "redstonedirt:block/redstone_dirt_south_east_west_covered"
+    },
+    "up=false,down=false,north=false,south=false,east=true,west=false": {
+      "model": "redstonedirt:block/redstone_dirt_east_covered"
+    },
+    "up=false,down=false,north=false,south=false,east=true,west=true": {
+      "model": "redstonedirt:block/redstone_dirt_east_west_covered"
+    },
+    "up=false,down=false,north=false,south=false,east=false,west=true": {
+      "model": "redstonedirt:block/redstone_dirt_west_covered"
+    },
+    "up=false,down=false,north=false,south=false,east=false,west=false": {
       "model": "redstonedirt:block/redstone_dirt"
     }
   }

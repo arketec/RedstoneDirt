@@ -10,5 +10,6 @@
   "block.redstonedirt.redstone_powered_dirt": "Powered Redstone Dirt",
   "item.redstonedirt.redstone_powered_dirt": "Powered Redstone Dirt",
   "block.redstonedirt.redstone_powered_farmland": "Powered Redstone Farmland",
-  "item.redstonedirt.redstone_powered_farmland": "Powered Redstone Farmland"
+  "item.redstonedirt.redstone_powered_farmland": "Powered Redstone Farmland",
+  "item.redstonedirt.insulated_cover": "Insulated Cover"
 }

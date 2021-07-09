@@ -42,7 +42,7 @@ public class BlockDetectorRedstoneDirt extends AbstractBlockRedstoneDirt {
                 return ActionResultType.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return super.use(state, world, pos, playerEntity, hand, hit);
     }
 
     @Override

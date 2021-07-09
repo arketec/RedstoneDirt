@@ -15,7 +15,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class RegistrationManager {
     public static final DeferredRegister<Block> BLOCKS = create(ForgeRegistries.BLOCKS);
-    public static final DeferredRegister<ContainerType<?>> CONTAINERS = create(ForgeRegistries.CONTAINERS);
     public static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = create(ForgeRegistries.TILE_ENTITIES);
     public static final DeferredRegister<Item> ITEMS = create(ForgeRegistries.ITEMS);
 
@@ -23,10 +22,10 @@ public class RegistrationManager {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
-        CONTAINERS.register(modEventBus);
         TILE_ENTITIES.register(modEventBus);
 
         ModBlocks.register();
+        ModItems.register();
         ModTileEntityTypes.register();
     }
 

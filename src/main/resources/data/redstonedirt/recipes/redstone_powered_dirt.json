@@ -1,10 +1,10 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "pattern":
   [
     "rrr",
     "rdr",
-    "rtr"
+    "rbr"
   ],
   "key":
   {
@@ -12,9 +12,9 @@
     {
       "item": "redstonedirt:redstone_dirt"
     },
-    "t":
+    "b":
     {
-      "item": "minecraft:redstone_torch"
+      "item": "minecraft:redstone_block"
     },
     "r":
     {
