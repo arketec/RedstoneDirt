@@ -63,7 +63,8 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
 
     @Override
     public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        return blockState.getValue(POWER);
+        BlockState state = blockAccess.getBlockState(pos.relative(side.getOpposite()));
+        return state.getBlock() instanceof RedstoneWireBlock || state.is(this) ? blockState.getValue(POWER) - 1:blockState.getValue(POWER);
     }
 
     @Override

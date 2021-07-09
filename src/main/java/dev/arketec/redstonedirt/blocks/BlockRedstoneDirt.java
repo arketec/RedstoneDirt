@@ -11,6 +11,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 
 public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
@@ -37,21 +38,25 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
         super.neighborChanged(blockState, world, pos, block, fromPos, isMoving);
         if (!world.isClientSide()) {
             if (world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.above())) {
-                this.updatePowerStrength(world, pos, blockState);
+                BlockState newState = this.updatePowerStrength(world, pos, blockState);
+                world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
             } else {
                 setBlockState(world, pos, defaultBlockState());
+                world.sendBlockUpdated(pos, defaultBlockState(), defaultBlockState(), Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
             }
+
         }
     }
 
     @Override
     public void onPlace(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
         if (!blockState.is(state.getBlock()) && !world.isClientSide()) {
-            this.updatePowerStrength(world, pos, state);
+            BlockState newState = this.updatePowerStrength(world, pos, state);
+            world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
         }
     }
 
-    private void updatePowerStrength(World world, BlockPos pos, BlockState state) {
+    private BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
         int neighborPower = world.getBestNeighborSignal(pos);
         int j = 0;
         if (neighborPower < 15) {
@@ -68,27 +73,13 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
             }
         }
         int strength = Math.max(neighborPower, j - 1);
-        boolean isBestNeighborThis = false;
-        for(Direction direction : Direction.values()) {
-            if (world.getSignal(pos.relative(direction), direction) == neighborPower) {
-                BlockState blockState = world.getBlockState(pos.relative(direction));
-                if (blockState.is(this)) {
-                    isBestNeighborThis = true;
-                } else if (isBestNeighborThis) {
-                    isBestNeighborThis = false;
-                    break;
-                }
-            }
-        }
-        if (isBestNeighborThis && strength == neighborPower) {
-            strength = Math.max(0, strength -1);
-        }
 
+        BlockState newState =state.setValue(POWERED, strength > 0 ? Boolean.valueOf(true): Boolean.valueOf(false))
+                .setValue(POWER, Integer.valueOf(strength));
         if (state.getValue(POWER) != strength && world.getBlockState(pos) == state) {
-            setBlockState(world, pos,
-                    state.setValue(POWERED, strength > 0 ? Boolean.valueOf(true): Boolean.valueOf(false))
-                            .setValue(POWER, Integer.valueOf(strength)));
+            setBlockState(world, pos,newState );
         }
+        return newState;
     }
 
     private int getBlockSignal(BlockState state) {
