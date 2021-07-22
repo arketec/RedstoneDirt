@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 
 public interface IRedstonePoweredPlantable {
@@ -16,4 +17,5 @@ public interface IRedstonePoweredPlantable {
     int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side);
     int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side);
     boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable);
+    BlockState updatePowerStrength(World world, BlockPos pos, BlockState state);
 }

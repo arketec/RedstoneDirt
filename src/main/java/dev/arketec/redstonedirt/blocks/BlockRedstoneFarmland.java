@@ -72,7 +72,7 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
         }
     }
 
-    private void updatePowerStrength(World world, BlockPos pos, BlockState state) {
+    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
         int neighborPower = world.getBestNeighborSignal(pos);
         int j = 0;
         if (neighborPower < 15) {
@@ -106,11 +106,13 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
             strength = Math.max(0, strength -1);
         }
 
+        BlockState newState = state.setValue(POWERED, strength > 0 ? Boolean.valueOf(true): Boolean.valueOf(false))
+                .setValue(POWER, Integer.valueOf(strength));
         if (state.getValue(POWER) != strength && world.getBlockState(pos) == state) {
             setBlockState(world, pos,
-                    state.setValue(POWERED, strength > 0 ? Boolean.valueOf(true): Boolean.valueOf(false))
-                            .setValue(POWER, Integer.valueOf(strength)));
+                    newState);
         }
+        return newState;
     }
 
     private int getBlockSignal(BlockState state) {

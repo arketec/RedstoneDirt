@@ -57,24 +57,6 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
     }
 
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (!world.isClientSide) {
-            if (!world.isAreaLoaded(pos, 2)) return;
-            if (world.getMaxLocalRawBrightness(pos.above()) >= 9)
-            {
-                for (int i = 0; i < 4; ++i)
-                {
-                    BlockPos blockpos = pos.offset(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
-
-                    if ((world.getBlockState(blockpos).is(Blocks.GRASS_BLOCK) || world.getBlockState(blockpos).is(ModBlocks.REDSTONE_GRASS.get())) && canPropagate(this.defaultBlockState(), world, pos))
-                        DirtHelper.turnToRedstoneGrass(state, world, pos);
-                }
-            }
-        }
-
-    }
-
-    @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
         return super.use(state, world, pos, playerEntity, hand, hit);
     };
@@ -105,7 +87,7 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
         builder.add(POWER, POWERED, ENABLED);
     }
 
-    private static boolean canBeGrass(BlockState state, IWorldReader reader, BlockPos pos) {
+    protected static boolean canBeGrass(BlockState state, IWorldReader reader, BlockPos pos) {
         BlockPos blockpos = pos.above();
         BlockState blockstate = reader.getBlockState(blockpos);
         if (blockstate.is(Blocks.SNOW) && blockstate.getValue(SnowBlock.LAYERS) == 1) {
@@ -118,7 +100,7 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
         }
     }
 
-    private static boolean canPropagate(BlockState state, IWorldReader reader, BlockPos pos) {
+    protected static boolean canPropagate(BlockState state, IWorldReader reader, BlockPos pos) {
         BlockPos blockpos = pos.above();
         return canBeGrass(state, reader, pos) && !reader.getFluidState(blockpos).is(FluidTags.WATER);
     }

@@ -1,6 +1,7 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
+import dev.arketec.redstonedirt.util.DirtHelper;
 import net.minecraft.block.*;
 import net.minecraft.item.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,7 +12,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.Random;
 
 
 public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
@@ -31,6 +35,24 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
             }
         }
         return super.use(state, world, pos, playerEntity, hand, hit);
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (!world.isClientSide) {
+            if (!world.isAreaLoaded(pos, 2)) return;
+            if (world.getMaxLocalRawBrightness(pos.above()) >= 9)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    BlockPos blockpos = pos.offset(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
+
+                    if ((world.getBlockState(blockpos).is(Blocks.GRASS_BLOCK) || world.getBlockState(blockpos).is(ModBlocks.REDSTONE_GRASS.get())) && canPropagate(this.defaultBlockState(), world, pos))
+                        DirtHelper.turnToRedstoneGrass(state, world, pos);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -56,7 +78,7 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
         }
     }
 
-    private BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
         int neighborPower = world.getBestNeighborSignal(pos);
         int j = 0;
         if (neighborPower < 15) {

@@ -1,5 +1,7 @@
 package dev.arketec.redstonedirt.blocks.tile;
 
+import dev.arketec.redstonedirt.blocks.IRedstonePoweredPlantable;
+import dev.arketec.redstonedirt.registration.ModBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -30,6 +32,15 @@ public abstract class TileDetectorBase extends TileBase implements ITickableTile
         if (level != null && !level.isClientSide()) {
             BlockState blockState = level.getBlockState(worldPosition);
             tickAction(blockState);
+
+
+            // update neighbors
+            for(Direction direction : Direction.values()) {
+                BlockPos blockpos = worldPosition.relative(direction);
+
+                if (blockState.getBlock() instanceof IRedstonePoweredPlantable)
+                    ((IRedstonePoweredPlantable)blockState.getBlock()).updatePowerStrength(level, blockpos, blockState);
+            }
         }
     }
 

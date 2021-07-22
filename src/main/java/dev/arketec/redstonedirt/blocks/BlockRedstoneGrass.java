@@ -65,7 +65,7 @@ public class BlockRedstoneGrass extends AbstractBlockRedstoneGrass {
         }
     }
 
-    private BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
         int neighborPower = world.getBestNeighborSignal(pos);
         int j = 0;
         if (neighborPower < 15) {

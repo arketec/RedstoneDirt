@@ -67,4 +67,9 @@ public class BlockDetectorRedstoneFarmland extends AbstractBlockRedstoneFarmland
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileDetectorRedstoneFarmland();
     }
+
+    @Override
+    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+        return state;
+    }
 }

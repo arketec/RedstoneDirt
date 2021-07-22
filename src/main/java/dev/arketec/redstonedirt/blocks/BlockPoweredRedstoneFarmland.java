@@ -51,4 +51,9 @@ public class BlockPoweredRedstoneFarmland extends AbstractBlockRedstoneFarmland 
 
         super.fallOn(world, pos, entity, v);
     }
+
+    @Override
+    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+        return state;
+    }
 }

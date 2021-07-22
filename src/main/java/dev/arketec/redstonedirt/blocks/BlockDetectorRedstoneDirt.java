@@ -4,6 +4,7 @@ import dev.arketec.redstonedirt.blocks.BlockRedstoneDirt;
 import dev.arketec.redstonedirt.blocks.tile.TileDetectorRedstoneDirt;
 import dev.arketec.redstonedirt.registration.ModBlocks;
 import dev.arketec.redstonedirt.registration.ModTileEntityTypes;
+import dev.arketec.redstonedirt.util.DirtHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -24,7 +25,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+
+import java.util.Random;
 
 public class BlockDetectorRedstoneDirt extends AbstractBlockRedstoneDirt {
 
@@ -53,6 +58,11 @@ public class BlockDetectorRedstoneDirt extends AbstractBlockRedstoneDirt {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileDetectorRedstoneDirt();
+    }
+
+    @Override
+    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+        return state;
     }
 
 }

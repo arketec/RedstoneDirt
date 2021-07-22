@@ -31,4 +31,9 @@ public class BlockPoweredRedstoneDirt extends AbstractBlockRedstoneDirt {
         }
         return super.use(state, world, pos, playerEntity, hand, hit);
     }
+
+    @Override
+    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+        return state;
+    }
 }
