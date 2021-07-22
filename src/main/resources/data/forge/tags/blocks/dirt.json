@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "redstonedirt:redstone_dirt",
-    "redstonedirt:redstone_dirt_detector"
+    "redstonedirt:redstone_dirt_detector",
+    "redstonedirt:redstone_grass"
   ]
 }
