@@ -1,28 +1,52 @@
 {
   "variants": {
-    "moisture=0": {
+    "moisture=0,powered=false": {
       "model": "redstonedirt:block/redstone_farmland_detector"
     },
-    "moisture=1": {
+    "moisture=1,powered=false": {
       "model": "redstonedirt:block/redstone_farmland_detector"
     },
-    "moisture=2": {
+    "moisture=2,powered=false": {
       "model": "redstonedirt:block/redstone_farmland_detector"
     },
-    "moisture=3": {
+    "moisture=3,powered=false": {
       "model": "redstonedirt:block/redstone_farmland_detector"
     },
-    "moisture=4": {
+    "moisture=4,powered=false": {
       "model": "redstonedirt:block/redstone_farmland_detector"
     },
-    "moisture=5": {
+    "moisture=5,powered=false": {
       "model": "redstonedirt:block/redstone_farmland_detector"
     },
-    "moisture=6": {
+    "moisture=6,powered=false": {
       "model": "redstonedirt:block/redstone_farmland_detector"
     },
-    "moisture=7": {
+    "moisture=7,powered=false": {
       "model": "redstonedirt:block/redstone_farmland_detector_moist"
+    },
+    "moisture=0,powered=true": {
+      "model": "redstonedirt:block/redstone_farmland_detector_powered"
+    },
+    "moisture=1,powered=true": {
+      "model": "redstonedirt:block/redstone_farmland_detector_powered"
+    },
+    "moisture=2,powered=true": {
+      "model": "redstonedirt:block/redstone_farmland_detector_powered"
+    },
+    "moisture=3,powered=true": {
+      "model": "redstonedirt:block/redstone_farmland_detector_powered"
+    },
+    "moisture=4,powered=true": {
+      "model": "redstonedirt:block/redstone_farmland_detector_powered"
+    },
+    "moisture=5,powered=true": {
+      "model": "redstonedirt:block/redstone_farmland_detector_powered"
+    },
+    "moisture=6,powered=true": {
+      "model": "redstonedirt:block/redstone_farmland_detector_powered"
+    },
+    "moisture=7,powered=true": {
+      "model": "redstonedirt:block/redstone_farmland_detector_moist_powered"
     }
   }
 }

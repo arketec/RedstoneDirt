@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "redstonedirt:block/redstone_dirt_detector_top_powered",
+    "bottom": "redstonedirt:block/redstone_dirt_powered",
+    "side": "redstonedirt:block/redstone_dirt_powered"
+  }
+}

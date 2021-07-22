@@ -1,22 +1,31 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
-import net.minecraft.block.*;
-import net.minecraft.item.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FarmlandBlock;
+import net.minecraft.block.GrassPathBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.Random;
 
-public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
 
-    public BlockRedstoneDirt() {
+public class BlockRedstoneGrassPath extends AbstractBlockRedstoneFarmland {
+
+    public BlockRedstoneGrassPath() {
         super(0, false,false);
     }
 
@@ -30,7 +39,8 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
                 return ActionResultType.SUCCESS;
             }
         }
-        return super.use(state, world, pos, playerEntity, hand, hit);
+        
+        return ActionResultType.PASS;
     }
 
     @Override
@@ -85,4 +95,20 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
     private int getBlockSignal(BlockState state) {
         return state.is(this) ? state.getValue(POWER) : 0;
     }
+
+    @Override
+    public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable) {
+        return false;
+    }
+
+    @Override
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+
+    }
+
 }

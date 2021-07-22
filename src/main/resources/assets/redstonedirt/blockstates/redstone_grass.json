@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstonedirt:block/redstone_grass"
+    },
+    "powered=true": {
+      "model": "redstonedirt:block/redstone_grass_powered"
+    }
+  }
+}

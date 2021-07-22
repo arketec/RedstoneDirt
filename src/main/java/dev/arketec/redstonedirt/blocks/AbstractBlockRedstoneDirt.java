@@ -1,5 +1,6 @@
 package dev.arketec.redstonedirt.blocks;
 
+import dev.arketec.redstonedirt.registration.ModBlocks;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
@@ -26,6 +28,7 @@ import net.minecraftforge.common.ToolType;
 import java.util.Random;
 
 public abstract class AbstractBlockRedstoneDirt extends Block implements IRedstonePoweredPlantable {
+    public static final int LIGHT_LEVEL = 5;
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
@@ -36,7 +39,7 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
                 .harvestLevel(0)
                 .harvestTool(ToolType.SHOVEL)
                 .sound(SoundType.GRAVEL)
-                .lightLevel((BlockState state) -> state.getValue(POWERED) ? 2: 0)
+                .lightLevel((BlockState state) -> state.getValue(POWERED) ? LIGHT_LEVEL: 0)
 
         );
         this.registerDefaultState(
@@ -49,7 +52,9 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
     }
 
     @Override
-    public abstract ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
+        return super.use(state, world, pos, playerEntity, hand, hit);
+    };
 
     @Override
     public boolean isSignalSource(BlockState state) {
@@ -64,7 +69,7 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
     @Override
     public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
         BlockState state = blockAccess.getBlockState(pos.relative(side.getOpposite()));
-        return state.getBlock() instanceof RedstoneWireBlock || state.is(this) ? blockState.getValue(POWER) - 1:blockState.getValue(POWER);
+        return shouldDecreasePower(state) ? blockState.getValue(POWER) - 1:blockState.getValue(POWER);
     }
 
     @Override
@@ -90,6 +95,17 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
 
     public void setBlockState(World world, BlockPos pos, BlockState newState) {
         world.setBlockAndUpdate(pos, newState);
+    }
+
+    protected boolean shouldDecreasePower(BlockState blockState) {
+        if (blockState.getBlock() instanceof RedstoneWireBlock) {
+            return true;
+        }
+        return blockState.is(ModBlocks.REDSTONE_DIRT.get())
+                || blockState.is(ModBlocks.REDSTONE_GRASS.get())
+                || blockState.is(ModBlocks.REDSTONE_FARMLAND.get())
+                || blockState.is(ModBlocks.REDSTONE_GRASS_PATH.get());
+
     }
 
     @OnlyIn(Dist.CLIENT)

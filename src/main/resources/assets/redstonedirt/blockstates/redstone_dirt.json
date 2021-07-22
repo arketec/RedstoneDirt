@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "powered=false": {
       "model": "redstonedirt:block/redstone_dirt"
+    },
+    "powered=true": {
+      "model": "redstonedirt:block/redstone_dirt_powered"
     }
   }
 }

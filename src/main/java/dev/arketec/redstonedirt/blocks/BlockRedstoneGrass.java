@@ -1,10 +1,12 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
-import net.minecraft.block.*;
-import net.minecraft.item.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -14,9 +16,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 
-public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
+public class BlockRedstoneGrass extends AbstractBlockRedstoneGrass {
 
-    public BlockRedstoneDirt() {
+    public BlockRedstoneGrass() {
         super(0, false,false);
     }
 
@@ -29,13 +31,19 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
                 world.setBlockAndUpdate(pos, ModBlocks.REDSTONE_FARMLAND.get().defaultBlockState());
                 return ActionResultType.SUCCESS;
             }
+            if (held.getItem() instanceof ShovelItem && world.isEmptyBlock(pos.above())) {
+                held.hurtAndBreak(1, playerEntity, e -> e.broadcastBreakEvent(hand));
+                world.setBlockAndUpdate(pos, ModBlocks.REDSTONE_GRASS_PATH.get().defaultBlockState());
+                return ActionResultType.SUCCESS;
+            }
         }
+
         return super.use(state, world, pos, playerEntity, hand, hit);
     }
 
     @Override
     public void neighborChanged(BlockState blockState, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        super.neighborChanged(blockState, world, pos, block, fromPos, isMoving);
+
         if (!world.isClientSide()) {
             if (world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.above())) {
                 BlockState newState = this.updatePowerStrength(world, pos, blockState);
@@ -46,6 +54,7 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
             }
 
         }
+        super.neighborChanged(blockState, world, pos, block, fromPos, isMoving);
     }
 
     @Override

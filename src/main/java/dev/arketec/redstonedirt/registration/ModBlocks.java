@@ -23,6 +23,14 @@ public class ModBlocks {
             new BlockRedstoneDirt()
     );
 
+    public static final RegistryObject<Block> REDSTONE_GRASS = register("redstone_grass", () ->
+            new BlockRedstoneGrass()
+    );
+
+    public static final RegistryObject<Block> REDSTONE_GRASS_PATH = register("redstone_grass_path", () ->
+            new BlockRedstoneGrassPath()
+    );
+
     public static final RegistryObject<Block> REDSTONE_FARMLAND = register(
             "redstone_farmland",
             BlockRedstoneFarmland::new
@@ -46,24 +54,6 @@ public class ModBlocks {
             BlockDetectorRedstoneFarmland::new
     );
 
-//    public static final RegistryObject<Block> REDSTONE_INVERTED_DIRT = register(
-//            "redstone_inverted_dirt",
-//            BlockNANDRedstoneDirt::new
-//    );
-//
-//    public static final RegistryObject<Block> REDSTONE_INVERTED_FARMLAND = register(
-//            "redstone_inverted_farmland",
-//            BlockNANDRedstoneFarmland::new
-//    );
-
-
-    // ender redstone dirt (entangled block states)
-
-    // redstone sand?
-
-    // magnetic sand (iron shavings)???
-
-    // magnetic oil (ferrous fluid)?????
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         return RegistrationManager.BLOCKS.register(name, block);
