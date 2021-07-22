@@ -1,6 +1,7 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
+import dev.arketec.redstonedirt.util.DirtHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FarmlandBlock;
@@ -108,7 +109,9 @@ public class BlockRedstoneGrassPath extends AbstractBlockRedstoneFarmland {
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-
+        if (!state.canSurvive(world, pos)) {
+            DirtHelper.turnToRedstoneDirt(state, world, pos);
+        }
     }
 
 }

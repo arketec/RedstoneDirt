@@ -2,6 +2,7 @@ package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.blocks.tile.TileDetectorRedstoneFarmland;
 import dev.arketec.redstonedirt.registration.ModBlocks;
+import dev.arketec.redstonedirt.util.DirtHelper;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.BlockItemUseContext;
@@ -23,7 +24,7 @@ public class BlockDetectorRedstoneFarmland extends AbstractBlockRedstoneFarmland
     @Override
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (!state.canSurvive(world, pos)) {
-            turnToRedstoneDirtDetector(state, world, pos);
+            DirtHelper.turnToRedstoneDirtDetector(state, world, pos);
         }
     }
 
@@ -34,7 +35,7 @@ public class BlockDetectorRedstoneFarmland extends AbstractBlockRedstoneFarmland
             if (i > 0) {
                 world.setBlock(pos, state.setValue(MOISTURE, Integer.valueOf(i - 1)), 2);
             } else if (!isUnderCrops(world, pos)) {
-                turnToRedstoneDirtDetector(state, world, pos);
+                DirtHelper.turnToRedstoneDirtDetector(state, world, pos);
             }
         } else if (i < 7) {
             world.setBlock(pos, state.setValue(MOISTURE, Integer.valueOf(7)), 2);
@@ -50,14 +51,12 @@ public class BlockDetectorRedstoneFarmland extends AbstractBlockRedstoneFarmland
     @Override
     public void fallOn(World world, BlockPos pos, Entity entity, float v) {
         if (!world.isClientSide && net.minecraftforge.common.ForgeHooks.onFarmlandTrample(world, pos, ModBlocks.REDSTONE_DIRT_DETECTOR.get().defaultBlockState(), v, entity)) { // Forge: Move logic to Entity#canTrample
-            turnToRedstoneDirtDetector(world.getBlockState(pos), world, pos);
+            DirtHelper.turnToRedstoneDirtDetector(world.getBlockState(pos), world, pos);
         }
 
         super.fallOn(world, pos, entity, v);
     }
-    public static void turnToRedstoneDirtDetector(BlockState state, World world, BlockPos pos) {
-        world.setBlockAndUpdate(pos, pushEntitiesUp(state, ModBlocks.REDSTONE_DIRT_DETECTOR.get().defaultBlockState(), world, pos));
-    }
+
 
     @Override
     public boolean hasTileEntity(BlockState state) {

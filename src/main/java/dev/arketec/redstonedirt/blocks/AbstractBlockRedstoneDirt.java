@@ -1,6 +1,7 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
+import dev.arketec.redstonedirt.util.DirtHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,6 +10,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -17,7 +19,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.lighting.LightEngine;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,6 +39,7 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
 
     public AbstractBlockRedstoneDirt(int defaultPower, boolean defaultPowered, boolean strongPowered) {
         super(AbstractBlock.Properties.of(Material.DIRT)
+                .randomTicks()
                 .strength(0.5f)
                 .harvestLevel(0)
                 .harvestTool(ToolType.SHOVEL)
@@ -49,6 +54,24 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
                         .setValue(POWERED, Boolean.valueOf(defaultPowered))
                         .setValue(ENABLED, Boolean.valueOf(strongPowered))
         );
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (!world.isClientSide) {
+            if (!world.isAreaLoaded(pos, 2)) return;
+            if (world.getMaxLocalRawBrightness(pos.above()) >= 9)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    BlockPos blockpos = pos.offset(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
+
+                    if ((world.getBlockState(blockpos).is(Blocks.GRASS_BLOCK) || world.getBlockState(blockpos).is(ModBlocks.REDSTONE_GRASS.get())) && canPropagate(this.defaultBlockState(), world, pos))
+                        DirtHelper.turnToRedstoneGrass(state, world, pos);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -80,6 +103,24 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(POWER, POWERED, ENABLED);
+    }
+
+    private static boolean canBeGrass(BlockState state, IWorldReader reader, BlockPos pos) {
+        BlockPos blockpos = pos.above();
+        BlockState blockstate = reader.getBlockState(blockpos);
+        if (blockstate.is(Blocks.SNOW) && blockstate.getValue(SnowBlock.LAYERS) == 1) {
+            return true;
+        } else if (blockstate.getFluidState().getAmount() == 8) {
+            return false;
+        } else {
+            int i = LightEngine.getLightBlockInto(reader, state, pos, blockstate, blockpos, Direction.UP, blockstate.getLightBlock(reader, blockpos));
+            return i < reader.getMaxLightLevel();
+        }
+    }
+
+    private static boolean canPropagate(BlockState state, IWorldReader reader, BlockPos pos) {
+        BlockPos blockpos = pos.above();
+        return canBeGrass(state, reader, pos) && !reader.getFluidState(blockpos).is(FluidTags.WATER);
     }
 
 

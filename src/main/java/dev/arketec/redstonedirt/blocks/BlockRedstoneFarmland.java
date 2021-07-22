@@ -1,6 +1,7 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
+import dev.arketec.redstonedirt.util.DirtHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -21,7 +22,7 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
     @Override
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (!state.canSurvive(world, pos)) {
-            turnToRedstoneDirt(state, world, pos);
+            DirtHelper.turnToRedstoneDirt(state, world, pos);
         }
     }
 
@@ -32,7 +33,7 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
             if (i > 0) {
                 world.setBlock(pos, state.setValue(MOISTURE, Integer.valueOf(i - 1)), 2);
             } else if (!isUnderCrops(world, pos)) {
-                turnToRedstoneDirt(state, world, pos);
+                DirtHelper.turnToRedstoneDirt(state, world, pos);
             }
         } else if (i < 7) {
             world.setBlock(pos, state.setValue(MOISTURE, Integer.valueOf(7)), 2);
@@ -47,7 +48,7 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
     @Override
     public void fallOn(World world, BlockPos pos, Entity entity, float v) {
         if (!world.isClientSide && net.minecraftforge.common.ForgeHooks.onFarmlandTrample(world, pos, ModBlocks.REDSTONE_DIRT.get().defaultBlockState(), v, entity)) { // Forge: Move logic to Entity#canTrample
-            turnToRedstoneDirt(world.getBlockState(pos), world, pos);
+            DirtHelper.turnToRedstoneDirt(world.getBlockState(pos), world, pos);
         }
 
         super.fallOn(world, pos, entity, v);
@@ -115,10 +116,5 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
     private int getBlockSignal(BlockState state) {
         return state.is(this) ? state.getValue(POWER) : 0;
     }
-
-    public static void turnToRedstoneDirt(BlockState state, World world, BlockPos pos) {
-        world.setBlockAndUpdate(pos, pushEntitiesUp(state, ModBlocks.REDSTONE_DIRT.get().defaultBlockState(), world, pos));
-    }
-
 
 }
