@@ -63,6 +63,7 @@ public class BlockRedstoneGrass extends AbstractBlockRedstoneGrass {
             BlockState newState = this.updatePowerStrength(world, pos, state);
             world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
         }
+        super.onPlace(state,world, pos, blockState, b);
     }
 
     public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {

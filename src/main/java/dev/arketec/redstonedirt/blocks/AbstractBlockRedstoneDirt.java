@@ -62,6 +62,25 @@ public abstract class AbstractBlockRedstoneDirt extends Block implements IRedsto
     };
 
     @Override
+    public void onPlace(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+        if (!world.isClientSide)
+            for (Direction dir: Direction.values()) {
+                world.updateNeighborsAt(pos.relative(dir), this);
+            }
+        super.onPlace(state,world, pos, blockState, b);
+    }
+
+    @Override
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+        if (!b) {
+            for (Direction dir : Direction.values()) {
+                world.updateNeighborsAt(pos.relative(dir), this);
+            }
+        }
+        super.onRemove(state, world, pos, blockState, b);
+    }
+
+    @Override
     public boolean isSignalSource(BlockState state) {
         return true;
     }

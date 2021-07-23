@@ -65,6 +65,7 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
             } else {
                 setBlockState(world, pos, defaultBlockState());
                 world.sendBlockUpdated(pos, defaultBlockState(), defaultBlockState(), Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
+                world.getBlockTicks().scheduleTick(pos, this, 2);
             }
 
         }
@@ -75,6 +76,7 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
         if (!blockState.is(state.getBlock()) && !world.isClientSide()) {
             BlockState newState = this.updatePowerStrength(world, pos, state);
             world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
+            super.onPlace(state,world,pos,blockState,b);
         }
     }
 

@@ -59,6 +59,25 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implem
     public abstract void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random);
 
     @Override
+    public void onPlace(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+        if (!world.isClientSide)
+            for (Direction dir: Direction.values()) {
+                world.updateNeighborsAt(pos.relative(dir), this);
+            }
+        super.onPlace(state,world, pos, blockState, b);
+    }
+
+    @Override
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+        if (!b) {
+            for (Direction dir : Direction.values()) {
+                world.updateNeighborsAt(pos.relative(dir), this);
+            }
+        }
+        super.onRemove(state, world, pos, blockState, b);
+    }
+
+    @Override
     public void fallOn(World world, BlockPos pos, Entity entity, float v) {
         entity.causeFallDamage(v, 1.0F);
     }

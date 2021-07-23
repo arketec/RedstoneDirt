@@ -69,6 +69,7 @@ public class BlockRedstoneFarmland extends AbstractBlockRedstoneFarmland {
     public void onPlace(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
         if (!blockState.is(state.getBlock()) && !world.isClientSide()) {
             this.updatePowerStrength(world, pos, state);
+            super.onPlace(state,world, pos, blockState, b);
         }
     }
 
