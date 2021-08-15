@@ -1,12 +1,12 @@
 package dev.arketec.redstonedirt.registration;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.item.BlockItem;
-import net.minecraft.world.GrassColors;
-import net.minecraft.world.biome.BiomeColors;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.GrassColor;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +21,7 @@ public class ModColors {
                 (state, reader, pos, color) ->
                     reader != null && pos != null ?
                             BiomeColors.getAverageGrassColor(reader, pos) :
-                            GrassColors.get(0.5D, 1.0D)
+                            GrassColor.get(0.5D, 1.0D)
                 , ModBlocks.REDSTONE_GRASS.get());
     }
 

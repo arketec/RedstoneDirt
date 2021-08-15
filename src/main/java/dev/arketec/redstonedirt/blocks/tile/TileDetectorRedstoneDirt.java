@@ -2,18 +2,19 @@ package dev.arketec.redstonedirt.blocks.tile;
 
 import dev.arketec.redstonedirt.blocks.BlockDetectorRedstoneDirt;
 import dev.arketec.redstonedirt.registration.ModTileEntityTypes;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.core.BlockPos;
 
 import static dev.arketec.redstonedirt.blocks.BlockRedstoneDirt.POWER;
 import static dev.arketec.redstonedirt.blocks.BlockRedstoneDirt.POWERED;
-import static net.minecraft.state.properties.BlockStateProperties.STAGE;
+import static net.minecraft.world.level.block.SaplingBlock.STAGE;
 
 
 public class TileDetectorRedstoneDirt extends TileDetectorBase {
-    public TileDetectorRedstoneDirt() {
-        super(ModTileEntityTypes.DETECTOR_REDSTONE_DIRT.get());
+    public TileDetectorRedstoneDirt(BlockPos pos, BlockState blockState) {
+        super(ModTileEntityTypes.DETECTOR_REDSTONE_DIRT.get(), pos, blockState);
     }
 
     @Override

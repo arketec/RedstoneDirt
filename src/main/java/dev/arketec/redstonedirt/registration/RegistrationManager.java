@@ -1,14 +1,12 @@
 package dev.arketec.redstonedirt.registration;
 
 import dev.arketec.redstonedirt.RedstoneDirt;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -19,8 +17,8 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class RegistrationManager {
     public static final DeferredRegister<Block> BLOCKS = create(ForgeRegistries.BLOCKS);
-    public static final DeferredRegister<ContainerType<?>> CONTAINERS = create(ForgeRegistries.CONTAINERS);
-    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = create(ForgeRegistries.TILE_ENTITIES);
+    public static final DeferredRegister<MenuType<?>> CONTAINERS = create(ForgeRegistries.CONTAINERS);
+    public static final DeferredRegister<BlockEntityType<?>> TILE_ENTITIES = create(ForgeRegistries.BLOCK_ENTITIES);
     public static final DeferredRegister<Item> ITEMS = create(ForgeRegistries.ITEMS);
 
     public static void register() {
@@ -40,7 +38,7 @@ public class RegistrationManager {
         ModColors.registerBlockColors();
         ModColors.registerItemColors();
 
-        RenderTypeLookup.setRenderLayer(ModBlocks.REDSTONE_GRASS.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.REDSTONE_GRASS.get(), RenderType.cutout());
     }
 
     private static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> create(IForgeRegistry<T> registry) {

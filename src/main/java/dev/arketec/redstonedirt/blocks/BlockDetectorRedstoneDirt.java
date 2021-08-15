@@ -1,67 +1,64 @@
 package dev.arketec.redstonedirt.blocks;
 
-import dev.arketec.redstonedirt.blocks.BlockRedstoneDirt;
+import dev.arketec.redstonedirt.blocks.tile.TileDetectorBase;
 import dev.arketec.redstonedirt.blocks.tile.TileDetectorRedstoneDirt;
 import dev.arketec.redstonedirt.registration.ModBlocks;
-import dev.arketec.redstonedirt.registration.ModTileEntityTypes;
-import dev.arketec.redstonedirt.util.DirtHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.MinecartItem;
-import net.minecraft.network.DebugPacketSender;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockDetectorRedstoneDirt extends AbstractBlockRedstoneDirt {
+public class BlockDetectorRedstoneDirt extends AbstractBlockRedstoneDirt implements EntityBlock {
 
     public BlockDetectorRedstoneDirt() {
         super(0, false,true);
     }
 
+    @Nullable
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
-        if (hand.name().equals(Hand.MAIN_HAND.name())) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide()) {
+            return null;
+        }
+        return (level1, blockPos, blockState, t) -> {
+            if (t instanceof TileDetectorBase) {
+                ((TileDetectorBase)t).tickServer();
+            }
+        };
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player playerEntity, InteractionHand hand, BlockHitResult hit) {
+        if (hand.name().equals(InteractionHand.MAIN_HAND.name())) {
             ItemStack held = playerEntity.getItemInHand(hand);
             if (held.getItem() instanceof HoeItem && world.isEmptyBlock(pos.above())) {
                 held.hurtAndBreak(1, playerEntity, e -> e.broadcastBreakEvent(hand));
                 world.setBlockAndUpdate(pos, ModBlocks.REDSTONE_FARMLAND_DETECTOR.get().defaultBlockState());
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
         return super.use(state, world, pos, playerEntity, hand, hit);
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new TileDetectorRedstoneDirt(blockPos, blockState);
     }
 
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileDetectorRedstoneDirt();
-    }
-
-    @Override
-    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+    public BlockState updatePowerStrength(Level world, BlockPos pos, BlockState state) {
         return state;
     }
 

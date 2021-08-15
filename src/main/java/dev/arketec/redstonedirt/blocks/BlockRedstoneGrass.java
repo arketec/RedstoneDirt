@@ -1,18 +1,18 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 
@@ -23,18 +23,18 @@ public class BlockRedstoneGrass extends AbstractBlockRedstoneGrass {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
-        if (hand.name().equals(Hand.MAIN_HAND.name())) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player playerEntity, InteractionHand hand, BlockHitResult hit) {
+        if (hand.name().equals(InteractionHand.MAIN_HAND.name())) {
             ItemStack held = playerEntity.getItemInHand(hand);
             if (held.getItem() instanceof HoeItem && world.isEmptyBlock(pos.above())) {
                 held.hurtAndBreak(1, playerEntity, e -> e.broadcastBreakEvent(hand));
                 world.setBlockAndUpdate(pos, ModBlocks.REDSTONE_FARMLAND.get().defaultBlockState());
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if (held.getItem() instanceof ShovelItem && world.isEmptyBlock(pos.above())) {
                 held.hurtAndBreak(1, playerEntity, e -> e.broadcastBreakEvent(hand));
                 world.setBlockAndUpdate(pos, ModBlocks.REDSTONE_GRASS_PATH.get().defaultBlockState());
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -42,7 +42,7 @@ public class BlockRedstoneGrass extends AbstractBlockRedstoneGrass {
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState blockState, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 
         if (!world.isClientSide()) {
             if (world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.above())) {
@@ -58,7 +58,7 @@ public class BlockRedstoneGrass extends AbstractBlockRedstoneGrass {
     }
 
     @Override
-    public void onPlace(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
         if (!blockState.is(state.getBlock()) && !world.isClientSide()) {
             BlockState newState = this.updatePowerStrength(world, pos, state);
             world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
@@ -66,7 +66,7 @@ public class BlockRedstoneGrass extends AbstractBlockRedstoneGrass {
         super.onPlace(state,world, pos, blockState, b);
     }
 
-    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+    public BlockState updatePowerStrength(Level world, BlockPos pos, BlockState state) {
         int neighborPower = world.getBestNeighborSignal(pos);
         int j = 0;
         if (neighborPower < 15) {

@@ -2,18 +2,19 @@ package dev.arketec.redstonedirt.blocks.tile;
 
 import dev.arketec.redstonedirt.blocks.BlockDetectorRedstoneFarmland;
 import dev.arketec.redstonedirt.registration.ModTileEntityTypes;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.IPlantable;
 
 import java.util.Collections;
 
 import static dev.arketec.redstonedirt.blocks.BlockRedstoneDirt.POWER;
 import static dev.arketec.redstonedirt.blocks.BlockRedstoneDirt.POWERED;
-import static net.minecraft.state.properties.BlockStateProperties.AGE_7;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_7;
 
 public class TileDetectorRedstoneFarmland extends TileDetectorBase {
-    public TileDetectorRedstoneFarmland() {
-        super(ModTileEntityTypes.DETECTOR_REDSTONE_FARMLAND.get());
+    public TileDetectorRedstoneFarmland(BlockPos pos, BlockState blockState) {
+        super(ModTileEntityTypes.DETECTOR_REDSTONE_FARMLAND.get(), pos, blockState);
     }
 
     @Override

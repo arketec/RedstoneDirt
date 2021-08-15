@@ -1,24 +1,23 @@
 package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
@@ -26,7 +25,15 @@ import net.minecraftforge.common.PlantType;
 
 import java.util.Random;
 
-public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implements IRedstonePoweredPlantable {
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FarmBlock;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+
+public abstract class AbstractBlockRedstoneFarmland extends FarmBlock implements IRedstonePoweredPlantable {
     public static final int LIGHT_LEVEL = 5;
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -53,13 +60,13 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implem
     }
 
     @Override
-    public abstract void tick(BlockState state, ServerWorld world, BlockPos pos, Random random);
+    public abstract void tick(BlockState state, ServerLevel world, BlockPos pos, Random random);
 
     @Override
-    public abstract void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random);
+    public abstract void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random random);
 
     @Override
-    public void onPlace(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
         if (!world.isClientSide)
             for (Direction dir: Direction.values()) {
                 world.updateNeighborsAt(pos.relative(dir), this);
@@ -68,7 +75,7 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implem
     }
 
     @Override
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
         if (!b) {
             for (Direction dir : Direction.values()) {
                 world.updateNeighborsAt(pos.relative(dir), this);
@@ -78,8 +85,8 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implem
     }
 
     @Override
-    public void fallOn(World world, BlockPos pos, Entity entity, float v) {
-        entity.causeFallDamage(v, 1.0F);
+    public void fallOn(Level world, BlockState state, BlockPos pos, Entity entity, float v) {
+        entity.causeFallDamage(v, 1.0F, DamageSource.FALL);
     }
 
     @Override
@@ -88,40 +95,40 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implem
     }
 
     @Override
-    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+    public int getDirectSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
         return blockState.getValue(ENABLED) ? getSignal(blockState, blockAccess, pos, side): 0;
     }
 
     @Override
-    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+    public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
         BlockState state = blockAccess.getBlockState(pos.relative(side.getOpposite()));
         return shouldDecreasePower(state) ? blockState.getValue(POWER) - 1:blockState.getValue(POWER);
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return true;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(POWER, POWERED, MOISTURE, ENABLED);
     }
 
 
     @Override
-    public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable) {
+    public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
         PlantType type = plantable.getPlantType(world, pos.offset(facing.getNormal()));
         return type == PlantType.CROP;
     }
 
-    protected boolean isUnderCrops(IBlockReader reader, BlockPos pos) {
+    protected boolean isUnderCrops(BlockGetter reader, BlockPos pos) {
         BlockState plant = reader.getBlockState(pos.above());
         BlockState state = reader.getBlockState(pos);
         return plant.getBlock() instanceof IPlantable && state.canSustainPlant(reader, pos, Direction.UP, (IPlantable)plant.getBlock());
     }
 
-    protected static boolean isNearWater(IWorldReader reader, BlockPos pos) {
+    protected static boolean isNearWater(LevelReader reader, BlockPos pos) {
         for(BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-4, 0, -4), pos.offset(4, 1, 4))) {
             if (reader.getFluidState(blockpos).is(FluidTags.WATER)) {
                 return true;
@@ -131,12 +138,12 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implem
         return net.minecraftforge.common.FarmlandWaterManager.hasBlockWaterTicket(reader, pos);
     }
 
-    public void setBlockState(World world, BlockPos pos, BlockState newState) {
+    public void setBlockState(Level world, BlockPos pos, BlockState newState) {
         world.setBlockAndUpdate(pos, newState);
     }
 
     protected boolean shouldDecreasePower(BlockState blockState) {
-        if (blockState.getBlock() instanceof RedstoneWireBlock) {
+        if (blockState.getBlock() instanceof RedStoneWireBlock) {
             return true;
         }
         return blockState.is(ModBlocks.REDSTONE_DIRT.get())
@@ -148,15 +155,15 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmlandBlock implem
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, Random random) {
         if (state.getValue(POWERED)) {
             VoxelShape shape = state.getShape(world, pos);
             if (!shape.isEmpty()) {
-                AxisAlignedBB bounds = shape.bounds();
+                AABB bounds = shape.bounds();
                 double x = pos.getX() + bounds.minX + random.nextDouble() * (bounds.maxX - bounds.minX);
                 double y = pos.getY() + bounds.minY + random.nextDouble() * (bounds.maxY - bounds.minY);
                 double z = pos.getZ() + bounds.minZ + random.nextDouble() * (bounds.maxZ - bounds.minZ);
-                world.addParticle(RedstoneParticleData.REDSTONE, x, y, z, 0, 0, 0);
+                world.addParticle(DustParticleOptions.REDSTONE, x, y, z, 0, 0, 0);
             }
         }
     }

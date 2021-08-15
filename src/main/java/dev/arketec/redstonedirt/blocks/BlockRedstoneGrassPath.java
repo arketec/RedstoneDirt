@@ -2,22 +2,19 @@ package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
 import dev.arketec.redstonedirt.util.DirtHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FarmlandBlock;
-import net.minecraft.block.GrassPathBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.Constants;
 
@@ -31,21 +28,21 @@ public class BlockRedstoneGrassPath extends AbstractBlockRedstoneFarmland {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
-        if (hand.name().equals(Hand.MAIN_HAND.name())) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player playerEntity, InteractionHand hand, BlockHitResult hit) {
+        if (hand.name().equals(InteractionHand.MAIN_HAND.name())) {
             ItemStack held = playerEntity.getItemInHand(hand);
             if (held.getItem() instanceof HoeItem && world.isEmptyBlock(pos.above())) {
                 held.hurtAndBreak(1, playerEntity, e -> e.broadcastBreakEvent(hand));
                 world.setBlockAndUpdate(pos, ModBlocks.REDSTONE_FARMLAND.get().defaultBlockState());
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
         
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void neighborChanged(BlockState blockState, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState blockState, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         super.neighborChanged(blockState, world, pos, block, fromPos, isMoving);
         if (!world.isClientSide()) {
             if (world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.above())) {
@@ -60,7 +57,7 @@ public class BlockRedstoneGrassPath extends AbstractBlockRedstoneFarmland {
     }
 
     @Override
-    public void onPlace(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
         if (!blockState.is(state.getBlock()) && !world.isClientSide()) {
             BlockState newState = this.updatePowerStrength(world, pos, state);
             world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
@@ -68,7 +65,7 @@ public class BlockRedstoneGrassPath extends AbstractBlockRedstoneFarmland {
         }
     }
 
-    public BlockState updatePowerStrength(World world, BlockPos pos, BlockState state) {
+    public BlockState updatePowerStrength(Level world, BlockPos pos, BlockState state) {
         int neighborPower = world.getBestNeighborSignal(pos);
         int j = 0;
         if (neighborPower < 15) {
@@ -99,17 +96,17 @@ public class BlockRedstoneGrassPath extends AbstractBlockRedstoneFarmland {
     }
 
     @Override
-    public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable) {
+    public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
         return false;
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
 
     }
 
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
         if (!state.canSurvive(world, pos)) {
             DirtHelper.turnToRedstoneDirt(state, world, pos);
         }

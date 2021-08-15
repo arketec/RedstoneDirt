@@ -2,28 +2,32 @@ package dev.arketec.redstonedirt.blocks.tile;
 
 import dev.arketec.redstonedirt.blocks.IRedstonePoweredPlantable;
 import dev.arketec.redstonedirt.registration.ModBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SaplingBlock;
+
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
 import java.util.Set;
 
 
-public abstract class TileDetectorBase extends TileBase implements ITickableTileEntity {
+public abstract class TileDetectorBase extends TileBase {
 
     private static final int _tickModulus = 10;
     private int _tickCounter = 0;
 
-    public TileDetectorBase(TileEntityType te) {
-        super(te);
+    public TileDetectorBase(BlockEntityType te, BlockPos pos, BlockState blockState) {
+        super(te, pos, blockState);
     }
 
-    @Override
-    public void tick() {
+    public void tickServer() {
         if ((++this._tickCounter % this._tickModulus) != 0) {
             return;
         }
@@ -46,19 +50,19 @@ public abstract class TileDetectorBase extends TileBase implements ITickableTile
 
     abstract protected void tickAction(BlockState blockState);
 
-    protected boolean isUnderCrops(World world, BlockPos pos) {
+    protected boolean isUnderCrops(Level world, BlockPos pos) {
         BlockState plant = world.getBlockState(pos.above());
         BlockState state = world.getBlockState(pos);
         return plant.getBlock() instanceof net.minecraftforge.common.IPlantable && state.canSustainPlant(world, pos, Direction.UP, (net.minecraftforge.common.IPlantable)plant.getBlock());
     }
 
-    protected boolean isUnderSapling(World world, BlockPos pos) {
+    protected boolean isUnderSapling(Level world, BlockPos pos) {
         BlockState state = world.getBlockState(pos.above());
 
         return state.getBlock() instanceof SaplingBlock;
     }
 
-    protected boolean isUnderTree(World world, BlockPos pos) {
+    protected boolean isUnderTree(Level world, BlockPos pos) {
         BlockState blockStateAbove = world.getBlockState(pos.above());
         Set<ResourceLocation> tagsBlockAbove = blockStateAbove.getBlock().getTags();
         final ResourceLocation logsTag = new ResourceLocation("minecraft", "logs");

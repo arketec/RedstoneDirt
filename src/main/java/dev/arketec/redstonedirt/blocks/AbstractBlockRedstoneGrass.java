@@ -2,34 +2,42 @@ package dev.arketec.redstonedirt.blocks;
 
 import dev.arketec.redstonedirt.registration.ModBlocks;
 import dev.arketec.redstonedirt.util.DirtHelper;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.lighting.LightEngine;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.lighting.LayerLightEngine;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
-import net.minecraftforge.common.ToolType;
 
 import java.util.Random;
+
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.StemBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class AbstractBlockRedstoneGrass extends GrassBlock implements IRedstonePoweredPlantable {
     public static final int LIGHT_LEVEL = 5;
@@ -39,7 +47,7 @@ public abstract class AbstractBlockRedstoneGrass extends GrassBlock implements I
 
 
     public AbstractBlockRedstoneGrass(int defaultPower, boolean defaultPowered, boolean strongPowered) {
-        super(AbstractBlock.Properties.of(Material.GRASS)
+        super(BlockBehaviour.Properties.of(Material.GRASS)
                 .randomTicks()
                 .strength(0.6F)
                 .sound(SoundType.GRASS)
@@ -55,12 +63,12 @@ public abstract class AbstractBlockRedstoneGrass extends GrassBlock implements I
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player playerEntity, InteractionHand hand, BlockHitResult hit) {
         return super.use(state, world, pos, playerEntity, hand, hit);
     };
 
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
         if (!world.isClientSide) {
             if (!world.isAreaLoaded(pos, 2)) return;
             if (!canBeGrass(state, world, pos)) {
@@ -84,7 +92,7 @@ public abstract class AbstractBlockRedstoneGrass extends GrassBlock implements I
     }
 
     @Override
-    public void onPlace(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
         if (!world.isClientSide)
             for (Direction dir: Direction.values()) {
                 world.updateNeighborsAt(pos.relative(dir), this);
@@ -93,7 +101,7 @@ public abstract class AbstractBlockRedstoneGrass extends GrassBlock implements I
     }
 
     @Override
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState blockState, boolean b) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
         if (!b) {
             for (Direction dir : Direction.values()) {
                 world.updateNeighborsAt(pos.relative(dir), this);
@@ -108,29 +116,29 @@ public abstract class AbstractBlockRedstoneGrass extends GrassBlock implements I
     }
 
     @Override
-    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+    public int getDirectSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
         return blockState.getValue(ENABLED) ? getSignal(blockState, blockAccess, pos, side): 0;
     }
 
     @Override
-    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+    public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
         BlockState state = blockAccess.getBlockState(pos.relative(side.getOpposite()));
         return shouldDecreasePower(state) ? blockState.getValue(POWER) - 1:blockState.getValue(POWER);
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return true;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(POWER, POWERED, ENABLED, SNOWY);
     }
 
 
     @Override
-    public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, IPlantable plantable) {
+    public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
         PlantType type = plantable.getPlantType(world, pos.offset(facing.getNormal()));
         return type == PlantType.PLAINS || type == PlantType.BEACH || plantable instanceof StemBlock;
     }
@@ -139,12 +147,12 @@ public abstract class AbstractBlockRedstoneGrass extends GrassBlock implements I
         return state.setValue(POWERED, Boolean.valueOf(true)).setValue(POWER, Integer.valueOf(15));
     }
 
-    public void setBlockState(World world, BlockPos pos, BlockState newState) {
+    public void setBlockState(Level world, BlockPos pos, BlockState newState) {
         world.setBlockAndUpdate(pos, newState);
     }
 
     protected boolean shouldDecreasePower(BlockState blockState) {
-        if (blockState.getBlock() instanceof RedstoneWireBlock) {
+        if (blockState.getBlock() instanceof RedStoneWireBlock) {
             return true;
         }
         return blockState.is(ModBlocks.REDSTONE_DIRT.get())
@@ -154,35 +162,35 @@ public abstract class AbstractBlockRedstoneGrass extends GrassBlock implements I
 
     }
 
-    private static boolean canBeGrass(BlockState state, IWorldReader reader, BlockPos pos) {
+    private static boolean canBeGrass(BlockState state, LevelReader reader, BlockPos pos) {
         BlockPos blockpos = pos.above();
         BlockState blockstate = reader.getBlockState(blockpos);
-        if (blockstate.is(Blocks.SNOW) && blockstate.getValue(SnowBlock.LAYERS) == 1) {
+        if (blockstate.is(Blocks.SNOW) && blockstate.getValue(SnowLayerBlock.LAYERS) == 1) {
             return true;
         } else if (blockstate.getFluidState().getAmount() == 8) {
             return false;
         } else {
-            int i = LightEngine.getLightBlockInto(reader, state, pos, blockstate, blockpos, Direction.UP, blockstate.getLightBlock(reader, blockpos));
+            int i = LayerLightEngine.getLightBlockInto(reader, state, pos, blockstate, blockpos, Direction.UP, blockstate.getLightBlock(reader, blockpos));
             return i < reader.getMaxLightLevel();
         }
     }
 
-    private static boolean canPropagate(BlockState state, IWorldReader reader, BlockPos pos) {
+    private static boolean canPropagate(BlockState state, LevelReader reader, BlockPos pos) {
         BlockPos blockpos = pos.above();
         return canBeGrass(state, reader, pos) && !reader.getFluidState(blockpos).is(FluidTags.WATER);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(BlockState state, World world, BlockPos pos, Random r) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, Random r) {
         if (state.getValue(POWERED)) {
             VoxelShape shape = state.getShape(world, pos);
             if (!shape.isEmpty()) {
-                AxisAlignedBB localBox = shape.bounds();
+                AABB localBox = shape.bounds();
                 double x = pos.getX() + localBox.minX + r.nextDouble() * (localBox.maxX - localBox.minX);
                 double y = pos.getY() + localBox.minY + r.nextDouble() * (localBox.maxY - localBox.minY);
                 double z = pos.getZ() + localBox.minZ + r.nextDouble() * (localBox.maxZ - localBox.minZ);
-                world.addParticle(RedstoneParticleData.REDSTONE, x, y, z, 0, 0, 0);
+                world.addParticle(DustParticleOptions.REDSTONE, x, y, z, 0, 0, 0);
             }
         }
     }
