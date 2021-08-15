@@ -1,6 +1,7 @@
 package dev.arketec.redstonedirt.blocks.tile;
 
 import dev.arketec.redstonedirt.blocks.IRedstonePoweredPlantable;
+import dev.arketec.redstonedirt.configuration.ModConfig;
 import dev.arketec.redstonedirt.registration.ModBlocks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -67,6 +68,11 @@ public abstract class TileDetectorBase extends TileBase {
         Set<ResourceLocation> tagsBlockAbove = blockStateAbove.getBlock().getTags();
         final ResourceLocation logsTag = new ResourceLocation("minecraft", "logs");
         return anyMatchTag(logsTag, tagsBlockAbove);
+    }
+
+    protected boolean isWithinRange(Level world, BlockPos pos) {
+        int range = ModConfig.detectorRange.get();
+        return pos.getY() < worldPosition.getY() + range - 1;
     }
 
     private boolean anyMatchTag(ResourceLocation tag, Set<ResourceLocation> setOfTags) {
