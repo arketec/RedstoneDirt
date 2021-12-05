@@ -122,13 +122,13 @@ public abstract class AbstractBlockRedstoneFarmland extends FarmBlock implements
         return type == PlantType.CROP;
     }
 
-    protected boolean isUnderCrops(BlockGetter reader, BlockPos pos) {
+    protected boolean isUnderCropsHack(BlockGetter reader, BlockPos pos) {
         BlockState plant = reader.getBlockState(pos.above());
         BlockState state = reader.getBlockState(pos);
         return plant.getBlock() instanceof IPlantable && state.canSustainPlant(reader, pos, Direction.UP, (IPlantable)plant.getBlock());
     }
 
-    protected static boolean isNearWater(LevelReader reader, BlockPos pos) {
+    protected static boolean isNearWaterHack(LevelReader reader, BlockPos pos) {
         for(BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-4, 0, -4), pos.offset(4, 1, 4))) {
             if (reader.getFluidState(blockpos).is(FluidTags.WATER)) {
                 return true;

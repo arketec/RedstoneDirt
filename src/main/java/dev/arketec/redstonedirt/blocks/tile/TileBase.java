@@ -51,7 +51,7 @@ public class TileBase extends BlockEntity {
     public final ClientboundBlockEntityDataPacket getUpdatePacket() {
         CompoundTag tag = new CompoundTag();
         writePacketNBT(tag);
-        return new ClientboundBlockEntityDataPacket(worldPosition, -999, tag);
+        return ClientboundBlockEntityDataPacket.create(this, (b) -> tag);
     }
 
     @Override

@@ -1,10 +1,32 @@
 {
   "variants": {
-    "powered=false": {
-      "model": "redstonedirt:block/redstone_grass"
-    },
-    "powered=true": {
-      "model": "redstonedirt:block/redstone_grass_powered"
-    }
+    "powered=false": [
+      {
+        "model": "redstonedirt:block/redstone_grass"
+      },
+      {
+        "model": "redstonedirt:block/redstone_grass_1"
+      },
+      {
+        "model": "redstonedirt:block/redstone_grass_2"
+      },
+      {
+        "model": "redstonedirt:block/redstone_grass_3"
+      }
+    ],
+    "powered=true": [
+      {
+        "model": "redstonedirt:block/redstone_grass_powered"
+      },
+      {
+        "model": "redstonedirt:block/redstone_grass_powered_1"
+      },
+      {
+        "model": "redstonedirt:block/redstone_grass_powered_2"
+      },
+      {
+        "model": "redstonedirt:block/redstone_grass_powered_3"
+      }
+    ]
   }
 }

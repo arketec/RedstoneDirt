@@ -27,10 +27,10 @@ public class BlockPoweredRedstoneFarmland extends AbstractBlockRedstoneFarmland 
     @Override
     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
         int i = state.getValue(MOISTURE);
-        if (!isNearWater(world, pos) && !world.isRainingAt(pos.above())) {
+        if (!isNearWaterHack(world, pos) && !world.isRainingAt(pos.above())) {
             if (i > 0) {
                 world.setBlock(pos, state.setValue(MOISTURE, Integer.valueOf(i - 1)), 2);
-            } else if (!isUnderCrops(world, pos)) {
+            } else if (!isUnderCropsHack(world, pos)) {
                 DirtHelper.turnToPoweredRedstoneDirt(state, world, pos);
             }
         } else if (i < 7) {

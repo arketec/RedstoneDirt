@@ -16,7 +16,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
 
@@ -47,10 +46,10 @@ public class BlockRedstoneGrassPath extends AbstractBlockRedstoneFarmland {
         if (!world.isClientSide()) {
             if (world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.above())) {
                 BlockState newState = this.updatePowerStrength(world, pos, blockState);
-                world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
+                world.sendBlockUpdated(pos, newState, newState, UPDATE_ALL | UPDATE_NEIGHBORS);
             } else {
                 setBlockState(world, pos, defaultBlockState());
-                world.sendBlockUpdated(pos, defaultBlockState(), defaultBlockState(), Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
+                world.sendBlockUpdated(pos, defaultBlockState(), defaultBlockState(), UPDATE_ALL | UPDATE_NEIGHBORS);
             }
 
         }
@@ -60,7 +59,7 @@ public class BlockRedstoneGrassPath extends AbstractBlockRedstoneFarmland {
     public void onPlace(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
         if (!blockState.is(state.getBlock()) && !world.isClientSide()) {
             BlockState newState = this.updatePowerStrength(world, pos, state);
-            world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
+            world.sendBlockUpdated(pos, newState, newState, UPDATE_ALL | UPDATE_NEIGHBORS);
             super.onPlace(state,world, pos, blockState, b);
         }
     }

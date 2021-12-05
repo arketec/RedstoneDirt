@@ -1,8 +1,6 @@
 package dev.arketec.redstonedirt.configuration;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;

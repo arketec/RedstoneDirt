@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
 
@@ -20,6 +19,8 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.ticks.ScheduledTick;
+import net.minecraft.world.ticks.TickAccess;
 
 public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
 
@@ -64,11 +65,11 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
         if (!world.isClientSide()) {
             if (world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.above())) {
                 BlockState newState = this.updatePowerStrength(world, pos, blockState);
-                world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
+                world.sendBlockUpdated(pos, newState, newState, UPDATE_ALL | UPDATE_NEIGHBORS);
             } else {
                 setBlockState(world, pos, defaultBlockState());
-                world.sendBlockUpdated(pos, defaultBlockState(), defaultBlockState(), Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
-                world.getBlockTicks().scheduleTick(pos, this, 2);
+                world.sendBlockUpdated(pos, defaultBlockState(), defaultBlockState(), UPDATE_ALL | UPDATE_NEIGHBORS);
+                world.getBlockTicks().schedule(new ScheduledTick(this, pos, 2, 2));
             }
 
         }
@@ -78,7 +79,7 @@ public class BlockRedstoneDirt extends AbstractBlockRedstoneDirt {
     public void onPlace(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
         if (!blockState.is(state.getBlock()) && !world.isClientSide()) {
             BlockState newState = this.updatePowerStrength(world, pos, state);
-            world.sendBlockUpdated(pos, newState, newState, Constants.BlockFlags.DEFAULT | Constants.BlockFlags.UPDATE_NEIGHBORS);
+            world.sendBlockUpdated(pos, newState, newState, UPDATE_ALL | UPDATE_NEIGHBORS);
             super.onPlace(state,world,pos,blockState,b);
         }
     }
