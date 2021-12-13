@@ -18,23 +18,16 @@ import net.minecraft.world.ticks.ScheduledTick;
 
 public class BlockRedstoneDirtPot extends AbstractBlockRedstoneDirt {
 
-    public static final BooleanProperty ATTACHED = BlockStateProperties.ATTACHED;
     public BlockRedstoneDirtPot() {
         super(0, false,false);
-        registerDefaultState(this.getStateDefinition().any()
-                .setValue(ATTACHED, false));
     }
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player playerEntity, InteractionHand hand, BlockHitResult hit) {
         if (hand.name().equals(InteractionHand.MAIN_HAND.name())) {
             ItemStack held = playerEntity.getItemInHand(hand);
-            if (!state.getValue(ATTACHED) && held.getItem().getRegistryName().getPath().equals("redstone_dirt")) {
-                playerEntity.setItemInHand(hand, ItemStack.EMPTY);
-                setBlockState(world, pos, state.setValue(ATTACHED, true));
-                return InteractionResult.SUCCESS;
-            }  else if (held.isEmpty() && playerEntity.isCrouching() && state.getValue(ATTACHED)) {
-                setBlockState(world, pos, defaultBlockState());
+            if (held.isEmpty() && playerEntity.isCrouching()) {
+                world.setBlockAndUpdate(pos, ModBlocks.EMPTY_POT.get().defaultBlockState());
                 playerEntity.addItem(new ItemStack(ModBlocks.REDSTONE_DIRT.get().asItem()));
                 return InteractionResult.SUCCESS;
             }
@@ -55,15 +48,6 @@ public class BlockRedstoneDirtPot extends AbstractBlockRedstoneDirt {
                 world.getBlockTicks().schedule(new ScheduledTick(this, pos, 2, 2));
             }
 
-        }
-    }
-
-    @Override
-    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState blockState, boolean b) {
-        if (!blockState.is(state.getBlock()) && !world.isClientSide()) {
-            BlockState newState = this.updatePowerStrength(world, pos, state);
-            world.sendBlockUpdated(pos, newState, newState, UPDATE_ALL | UPDATE_NEIGHBORS);
-            super.onPlace(state,world,pos,blockState,b);
         }
     }
 
@@ -97,8 +81,4 @@ public class BlockRedstoneDirtPot extends AbstractBlockRedstoneDirt {
         return state.is(this) ? state.getValue(POWER) : 0;
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(POWER, POWERED, ENABLED, ATTACHED);
-    }
 }

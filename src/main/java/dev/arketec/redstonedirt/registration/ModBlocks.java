@@ -48,6 +48,17 @@ public class ModBlocks {
             BlockDetectorRedstoneFarmland::new
     );
 
+    public static final RegistryObject<Block> EMPTY_POT = register("empty_pot", () ->
+            new BlockEmptyPot()
+    );
+
+    public static final RegistryObject<Block> REDSTONE_DIRT_POT = register("redstone_dirt_pot", () ->
+            new BlockRedstoneDirtPot()
+    );
+
+    public static final RegistryObject<Block> REDSTONE_DIRT_DETECTOR_POT = register("redstone_dirt_detector_pot", () ->
+            new BlockDetectorRedstoneDirtPot()
+    );
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         return RegistrationManager.BLOCKS.register(name, block);
