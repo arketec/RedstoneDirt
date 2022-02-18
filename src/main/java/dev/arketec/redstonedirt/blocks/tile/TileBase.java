@@ -25,16 +25,14 @@ public class TileBase extends BlockEntity {
     }
     @Nonnull
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        CompoundTag ret = super.save(tag);
-        writePacketNBT(ret);
-        return ret;
+    public void saveAdditional(CompoundTag tag) {
+        writePacketNBT(tag);
     }
 
     @Nonnull
     @Override
     public final CompoundTag getUpdateTag() {
-        return save(new CompoundTag());
+        return super.saveWithFullMetadata();
     }
 
     @Override
